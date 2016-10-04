@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 {
-    "name": "Support branding",
+    "name": "ThinkOpen Solutions Support branding",
     "summary": "Adds Thinkopen Solutions Brasil branding on Odoo instances",
     "category": "Base",
     "version": "1",
