@@ -12,4 +12,5 @@
     "data": [
         "data/ir_config_parameter.xml",
     ],
+    "auto_install": True,
 }
