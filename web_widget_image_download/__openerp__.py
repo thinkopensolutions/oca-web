@@ -3,8 +3,8 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     "name": "Web Widget - Image Download",
-    "summary": "Allows to download the avatar for the contact",
-    "version": "8.0.1.0.0",
+    "summary": "Allows to download any image from its widget",
+    "version": "8.0.1.0.1",
     "category": "web",
     "website": "https://www.tecnativa.com",
     "author": "Tecnativa, Odoo Community Association (OCA)",
