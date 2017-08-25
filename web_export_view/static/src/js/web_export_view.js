@@ -46,45 +46,49 @@ odoo.define('web_export_view', function (require) {
                     export_columns_names.push(this.string);
                 }
             });
+            var rows = view.$el.find('.o_list_view > tbody > tr');
             var export_rows = [];
-            $.blockUI();
-            if (children) {
+            $.each(rows, function () {
+                var $row = $(this);
                 // find only rows with data
-                view.$el.find('.o_list_view > tbody > tr[data-id]:has(.o_list_record_selector input:checkbox:checked)')
-                .each(function () {
-                    var $row = $(this);
+                if ($row.attr('data-id')) {
                     var export_row = [];
-                    $.each(export_columns_keys, function () {
-                        var $cell = $row.find('td[data-field="' + this + '"]')
-                        var $cellcheckbox = $cell.find('.o_checkbox input:checkbox');
-                        if ($cellcheckbox.length) {
-                            export_row.push(
-                                $cellcheckbox.is(":checked")
-                                ? _t("True") : _t("False")
-                            );
-                        }
-                        else {
-                            var text = $cell.text().trim();
-                            if ($cell.hasClass("o_list_number")) {
-                                export_row.push(parseFloat(
-                                    text
-                                    // Remove thousands separator
-                                    .split(_t.database.parameters.thousands_sep)
-                                    .join("")
-                                    // Always use a `.` as decimal separator
-                                    .replace(_t.database.parameters.decimal_point, ".")
-                                    // Remove non-numeric characters
-                                    .replace(/[^\d\.-]/g, "")
-                                ));
+                    var checked = $row.find('.o_list_record_selector input[type=checkbox]').is(':checked');
+                    if (children && checked === true) {
+                        $.each(export_columns_keys, function () {
+                            var $cell = $row.find('td[data-field="' + this + '"]')
+                            var $cellcheckbox = $cell.find('.o_checkbox input[type=checkbox]');
+                            if ($cellcheckbox.length) {
+                                if ($cellcheckbox.is(':checked')) {
+                                    export_row.push(_t("True"));
+                                }
+                                else {
+                                    export_row.push(_t("False"));
+                                }
                             }
                             else {
-                                export_row.push(text);
+                                var cell = $cell.get(0);
+                                var text = cell.text || cell.textContent || cell.innerHTML || "";
+
+                                if (cell.classList.contains("o_list_number")) {
+                                    var tmp2 = text;
+                                    do {
+                                        var tmp = tmp2;
+                                        tmp2 = tmp.replace(_t.database.parameters.thousands_sep, "");
+                                    } while (tmp !== tmp2);
+                                    tmp2 = tmp.replace(_t.database.parameters.decimal_point, ".");
+                                    export_row.push(parseFloat(tmp2));
+                                }
+                                else {
+                                    export_row.push(text.trim());
+                                }
                             }
-                        }
-                    });
-                    export_rows.push(export_row);
-                });
-            }
+                        });
+                        export_rows.push(export_row);
+                    }
+                }
+            });
+            $.blockUI();
             view.session.get_file({
                 url: '/web/export/xls_view',
                 data: {data: JSON.stringify({
