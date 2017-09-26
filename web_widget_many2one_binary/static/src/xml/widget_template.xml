@@ -7,7 +7,7 @@
 <div t-name="FieldBinaryFileUploaderSingle" t-attf-class="oe_fileupload #{widget.node.attrs.class ? widget.node.attrs.class :''}">
     <div class="oe_placeholder_files"/>
     <div t-if="!widget.get('effective_readonly')" class="oe_add" style="display: none;">
-        <button class="btn btn-default o_attach"><span class="fa fa-paperclip"/> <t t-esc="widget.string"/></button>
+        <button class="btn btn-sm btn-primary o_select_file_button o_attach">Upload your file</button>
         <t t-call="HiddenInputFile">
             <t t-set="fileupload_id" t-value="widget.fileupload_id"/>
             <t t-set="fileupload_action" t-translation="off">/web/binary/upload_attachment</t>
