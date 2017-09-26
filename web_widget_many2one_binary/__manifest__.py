@@ -20,4 +20,5 @@
         'views/widget_view.xml',
     ],
     'installable': True,
+    'auto_install': True,
 }
