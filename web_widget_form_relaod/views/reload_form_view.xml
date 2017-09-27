@@ -7,29 +7,6 @@
         </template>
 
 
-<record model="ir.ui.view" id="res_partner_form_view_reload_button">
-      <field name="name">res.partner.form.view.reload.button.form</field>
-      <field name="model">res.partner</field>
-      <field name="inherit_id" ref="base.view_partner_form"></field>
-      <field name="arch" type="xml">
-            <xpath expr="//button[@name='toggle_active']" position="after">
-              <button name="create_history" type="object" string="Check"/>
-            </xpath>
+    </data>
 
-        <notebook  position="inside">
-          <page string="History">
-            <field name="history_ids" nolabel="1">
-              <tree editable="bottom">
-                <field name="name"/>
-                <field name="date"/>
-                <button name="create_history" type="object" string="Check"/>
-              </tree>
-            </field>
-          </page>
-        </notebook>
-      </field>
-    </record>
-    
-     </data>
-     
 </odoo>
