@@ -1,4 +1,4 @@
-odoo.define('web_widget_form_relaod.form_widget', function (require) {
+odoo.define('web_widget_form_reload.form_widget', function (require) {
 "use strict";
 var core = require('web.core');
 
