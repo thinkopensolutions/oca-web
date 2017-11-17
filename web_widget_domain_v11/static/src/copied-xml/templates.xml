@@ -7,10 +7,10 @@
 <div t-name="FieldDomain" t-attf-class="o_form_field_domain#{widget.get('effective_readonly') ? '' : ' o_edit_mode'}#{widget.options.in_dialog ? '' : ' o_inline_mode'}">
     <!-- domain selector will be instantiated here -->
     <div class="o_form_field_domain_panel">
-        <i class="fa fa-arrow-right"/>
-        <button class="btn btn-xs btn-default o_domain_show_selection_button" type="button">
-            <span class="o_domain_records_count"/> record(s)
-        </button>
+        <!--<i class="fa fa-arrow-right"/>-->
+        <!--<button class="btn btn-xs btn-default o_domain_show_selection_button" type="button">-->
+            <!--<span class="o_domain_records_count"/> record(s)-->
+        <!--</button>-->
         <span class="text-warning o_domain_error_message hidden"><i class="fa fa-exclamation-triangle"/> Invalid domain</span>
         <button t-if="widget.options.in_dialog &amp;&amp; !widget.get('effective_readonly')"
             class="btn btn-xs btn-primary o_form_field_domain_dialog_button">Edit domain</button>
@@ -20,22 +20,14 @@
 
 <t t-name="DomainNode.ControlPanel">
     <div t-if="!widget.readonly &amp;&amp; !widget.noControlPanel" class="btn-group btn-group-sm pull-right o_domain_node_control_panel">
-        <button class="btn btn-default o_domain_delete_node_button"><i class="fa fa-minus"/></button>
-        <button class="btn btn-default o_domain_add_node_button"><i class="fa fa-plus"/></button>
-        <button class="btn btn-default o_domain_add_node_button" data-branch="1"><i class="fa fa-ellipsis-h"/></button>
     </div>
 </t>
 <t t-name="DomainTree.OperatorSelector">
-    <div t-if="!widget.readonly" class="btn-group o_domain_tree_operator_selector">
-        <button class="btn btn-xs btn-primary o_domain_tree_operator_caret" data-toggle="dropdown">
-            <t t-if="widget.operator === '&amp;'">All</t>
-            <t t-if="widget.operator === '|'">Any</t>
-            <t t-if="widget.operator === '!'">None</t>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="#" data-operator="&amp;">All</a></li>
-            <li><a href="#" data-operator="|">Any</a></li>
-        </ul>
+    <div t-if="!widget.readonly" class="btn-group">
+        <select class="o_domain_tree_operator_selector">
+            <option value="&amp;" t-att-selected="widget.operator === '&amp;' ? 'selected' : null">All</option>
+            <option value="|" t-att-selected="widget.operator === '|' ? 'selected' : null">Any</option>
+        </select>
     </div>
     <strong t-else="">
         <t t-if="widget.operator === '&amp;'">ALL</t>
@@ -75,40 +67,40 @@
 
     <div t-if="!widget.readonly" class="o_domain_leaf_edition">
         <!-- field selector will be instantiated here -->
-        <select class="o_domain_leaf_operator_select">
-            <option t-foreach="widget.operators" t-as="key"
-                    t-att-value="key"
-                    t-att-selected="widget.displayOperator === key ? 'selected' : None">
-                <t t-esc="key_value"/>
-            </option>
-        </select>
-        <div t-attf-class="o_ds_value_cell#{_.contains(['set', 'not set'], widget.displayOperator) ? ' hidden' : ''}">
-            <t t-if="widget.selectionChoices !== null">
-                <select class="o_domain_leaf_value_input">
-                    <option t-foreach="widget.selectionChoices" t-as="val"
-                            t-att-value="val[0]"
-                            t-att-selected="_.contains(val, widget.displayValue) ? 'selected' : None">
-                        <t t-esc="val[1]"/>
-                    </option>
-                </select>
-            </t>
-            <t t-else="">
-                <t t-if="_.contains(['in', 'not in'], widget.operator)">
-                    <div class="o_domain_leaf_value_input">
-                        <span class="badge" t-foreach="widget.displayValue" t-as="val">
-                            <t t-esc="val"/> <i class="o_domain_leaf_value_remove_tag_button fa fa-times" t-att-data-value="val"/>
-                        </span>
-                    </div>
-                    <div class="o_domain_leaf_value_tags">
-                        <input placeholder="Add new value" type="text"/>
-                        <button class="btn btn-xs btn-primary fa fa-plus o_domain_leaf_value_add_tag_button"/>
-                    </div>
-                </t>
-                <t t-else="">
-                    <input class="o_domain_leaf_value_input" type="text" t-att-value="widget.displayValue"/>
-                </t>
-            </t>
-        </div>
+        <!--<select class="o_domain_leaf_operator_select">-->
+            <!--<option t-foreach="widget.operators" t-as="key"-->
+                    <!--t-att-value="key"-->
+                    <!--t-att-selected="widget.displayOperator === key ? 'selected' : None">-->
+                <!--<t t-esc="key_value"/>-->
+            <!--</option>-->
+        <!--</select>-->
+        <!--<div t-attf-class="o_ds_value_cell#{_.contains(['set', 'not set'], widget.displayOperator) ? ' hidden' : ''}">-->
+            <!--<t t-if="widget.selectionChoices !== null">-->
+                <!--<select class="o_domain_leaf_value_input">-->
+                    <!--<option t-foreach="widget.selectionChoices" t-as="val"-->
+                            <!--t-att-value="val[0]"-->
+                            <!--t-att-selected="_.contains(val, widget.displayValue) ? 'selected' : None">-->
+                        <!--<t t-esc="val[1]"/>-->
+                    <!--</option>-->
+                <!--</select>-->
+            <!--</t>-->
+            <!--<t t-else="">-->
+                <!--<t t-if="_.contains(['in', 'not in'], widget.operator)">-->
+                    <!--<div class="o_domain_leaf_value_input">-->
+                        <!--<span class="badge" t-foreach="widget.displayValue" t-as="val">-->
+                            <!--<t t-esc="val"/> <i class="o_domain_leaf_value_remove_tag_button fa fa-times" t-att-data-value="val"/>-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <!--<div class="o_domain_leaf_value_tags">-->
+                        <!--<input placeholder="Add new value" type="text"/>-->
+                        <!--<button class="btn btn-xs btn-primary fa fa-plus o_domain_leaf_value_add_tag_button"/>-->
+                    <!--</div>-->
+                <!--</t>-->
+                <!--<t t-else="">-->
+                    <!--<input class="o_domain_leaf_value_input" type="text" t-att-value="widget.displayValue"/>-->
+                <!--</t>-->
+            <!--</t>-->
+        <!--</div>-->
     </div>
     <div t-else="" class="o_domain_leaf_info">
         <span class="o_domain_leaf_chain"><t t-esc="widget.chain"/></span>
