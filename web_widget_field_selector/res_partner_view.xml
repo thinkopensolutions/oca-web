@@ -11,7 +11,7 @@
                 <field name="model_id"/>
             </field>
             <field name="fax" position="attributes">
-                <attribute name="widget">char_domain</attribute>
+                <attribute name="widget">field-selector</attribute>
                 <attribute name="options">{'model_field': 'model_id'}</attribute>
             </field>
         </field>
