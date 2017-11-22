@@ -154,7 +154,17 @@ var FieldSelector = widget.FieldChar.extend({
             this._prefill()
         );
     },
+
+    get_model: function(){
+    if (this.options.model) {
+                return this.options.model;
+            }
+            if (this.field_manager.fields[this.options.model_field]) {
+                return this.field_manager.get_field_value(this.options.model_field);
+            }
+    },
     start: function () {
+        this.model = this.get_model();
         this.$input = this.$("input");
         this.$popover = this.$(".o_field_selector_popover");
         this.displayPage();
@@ -200,7 +210,10 @@ var FieldSelector = widget.FieldChar.extend({
         this._isOpen = true;
         this._prefill().then((function () {
             this.displayPage();
-            this.$popover.removeClass("hidden");
+            //this.$popover.removeClass("hidden");
+            // Below line works
+            // yogesh
+            $('div.o_field_selector_popover.hidden').removeClass('hidden')
         }).bind(this));
     },
     /// The hidePopover method closes the popover and mark the field as selected. If the field chain changed,
