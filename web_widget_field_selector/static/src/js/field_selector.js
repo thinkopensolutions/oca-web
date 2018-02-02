@@ -1,14 +1,15 @@
-odoo.define("web.ModelFieldSelector", function (require) {
+odoo.define("web_widget_field_selector.field_selector", function (require) {
 "use strict";
 
 var core = require("web.core");
 var Model = require("web.DataModel");
 var Widget = require("web.Widget");
+var widget = require('web.form_widgets');
 
 var _t = core._t;
 
-/// The ModelFieldSelector widget can be used to select a particular field chain from a given model.
-var ModelFieldSelector = Widget.extend({
+/// The FieldSelector widget can be used to select a particular field chain from a given model.
+var FieldSelector = widget.FieldChar.extend({
     template: "FieldSelector",
     events: {
         // Handle popover opening and closing
@@ -108,7 +109,13 @@ var ModelFieldSelector = Widget.extend({
             }
         },
     },
-    /// The ModelFieldSelector requires a model and a initial field chain to work with.
+    custom_events: {
+        "field_chain_changed": function (e) {
+            // write chained value on the field
+            this.internal_set_value(e.data.chain);
+        },
+    },
+    /// The FieldSelector requires a model and a initial field chain to work with.
     /// @param model - a string with the model name (e.g. "res.partner")
     /// @param chain - a string with the initial field chain (e.g. "company_id.name")
     /// @param options - an object with several options:
@@ -121,13 +128,16 @@ var ModelFieldSelector = Widget.extend({
     init: function (parent, model, chain, options) {
         this._super.apply(this, arguments);
 
-        this.model = model;
-        this.chain = chain;
+//        this.model = model;
+        this.model= 'res.partner';
+        this.chain = 'id';
+        this.model_field = this.options.model_field;
         this.options = _.extend({
             filters: {},
             fields: null,
             followRelations: true,
             debugMode: false,
+            model_field: this.model_field,
         }, options || {});
         this.options.filters = _.extend({
             searchable: true,
@@ -144,7 +154,17 @@ var ModelFieldSelector = Widget.extend({
             this._prefill()
         );
     },
+
+    get_model: function(){
+    if (this.options.model) {
+                return this.options.model;
+            }
+            if (this.field_manager.fields[this.options.model_field]) {
+                return this.field_manager.get_field_value(this.options.model_field);
+            }
+    },
     start: function () {
+        this.model = this.get_model();
         this.$input = this.$("input");
         this.$popover = this.$(".o_field_selector_popover");
         this.displayPage();
@@ -190,7 +210,10 @@ var ModelFieldSelector = Widget.extend({
         this._isOpen = true;
         this._prefill().then((function () {
             this.displayPage();
-            this.$popover.removeClass("hidden");
+            //this.$popover.removeClass("hidden");
+            // Below line works
+            // yogesh
+            $('div.o_field_selector_popover.hidden').removeClass('hidden')
         }).bind(this));
     },
     /// The hidePopover method closes the popover and mark the field as selected. If the field chain changed,
@@ -336,5 +359,6 @@ function sortFields(fields) {
         .value();
 }
 
-return ModelFieldSelector;
+core.form_widget_registry.add('field-selector', FieldSelector);
+return FieldSelector;
 });
