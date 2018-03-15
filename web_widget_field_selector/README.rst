@@ -3,31 +3,39 @@
    :alt: License: LGPL-3
 
 ===============================
-Odoo 11.0 Domain Widget Preview
+Odoo Field Selector widget
 ===============================
 
-This module replaces the functionality of the domain widget to use a preview of
-the brand new interface that will be found in Odoo 11.0.
 
 Usage
 =====
 
 To use this module, you need to:
 
-#. define model_id selection field like below
-#. model_id = fields.Selection(selection='_list_all_models', string='Model', required=False)
+    #. define model_id selection field like below
+
+    #. selection field populate with below function
+
+.. code-block:: python
+
+    model_id = fields.Selection(selection='_list_all_models', string='Model', required=False)
 
     @api.model
     def _list_all_models(self):
         self._cr.execute("SELECT model, name FROM ir_model ORDER BY name")
         return self._cr.fetchall()
 
-    so this field should be filled with all models
 
-#    next create any of char field and use this widget as like widget="field-selector" with 2 more attributes attrs and data_model_field
 
-#    for example if you want to apply this widget on fax field , set field readonoly till model is not set
-#    <field name="fax" position="attributes">
+To use this field in view
+===========================
+#. Define the char field with widget="field-selector"
+#. Using attrs set field read-only until the model is selected like,
+
+
+.. code-block:: xml
+
+    <field name="fax" position="attributes">
                 <attribute name="widget">field-selector</attribute>
                 <attribute name="attrs">{'readonly': [('model_id','=', False)]}</attribute>
                 <attribute name="data_model_field">model_id</attribute>
