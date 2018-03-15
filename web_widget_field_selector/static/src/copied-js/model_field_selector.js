@@ -1,15 +1,14 @@
-odoo.define("web_widget_field_selector.field_selector", function (require) {
+odoo.define("web.ModelFieldSelector", function (require) {
 "use strict";
 
 var core = require("web.core");
 var Model = require("web.DataModel");
 var Widget = require("web.Widget");
-var widget = require('web.form_widgets');
 
 var _t = core._t;
 
-/// The FieldSelector widget can be used to select a particular field chain from a given model.
-var FieldSelector = widget.FieldChar.extend({
+/// The ModelFieldSelector widget can be used to select a particular field chain from a given model.
+var ModelFieldSelector = Widget.extend({
     template: "FieldSelector",
     events: {
         // Handle popover opening and closing
@@ -31,7 +30,6 @@ var FieldSelector = widget.FieldChar.extend({
         "click li.o_field_selector_select_button": function (e) {
             e.stopPropagation();
             this.selectField(this._getLastPageField($(e.currentTarget).data("name")));
-            this.$el.find('.o_field_selector_popover').addClass('hidden');
         },
 
         // Handle a direct change in the debug input
@@ -48,7 +46,6 @@ var FieldSelector = widget.FieldChar.extend({
             this.validate(true);
             this._prefill().then(this.displayPage.bind(this, ""));
             this.trigger_up("field_chain_changed", {chain: this.chain});
-
         },
 
         // Handle keyboard and mouse navigation to build the field chain
@@ -111,13 +108,7 @@ var FieldSelector = widget.FieldChar.extend({
             }
         },
     },
-    custom_events: {
-        "field_chain_changed": function (e) {
-            // write chained value on the field
-            this.internal_set_value(e.data.chain);
-        },
-    },
-    /// The FieldSelector requires a model and a initial field chain to work with.
+    /// The ModelFieldSelector requires a model and a initial field chain to work with.
     /// @param model - a string with the model name (e.g. "res.partner")
     /// @param chain - a string with the initial field chain (e.g. "company_id.name")
     /// @param options - an object with several options:
@@ -130,16 +121,13 @@ var FieldSelector = widget.FieldChar.extend({
     init: function (parent, model, chain, options) {
         this._super.apply(this, arguments);
 
-//        this.model = model;
-        this.model= 'res.partner';
-        this.chain = 'id';
-        this.model_field = this.options.model_field;
+        this.model = model;
+        this.chain = chain;
         this.options = _.extend({
             filters: {},
             fields: null,
             followRelations: true,
             debugMode: false,
-            model_field: this.model_field,
         }, options || {});
         this.options.filters = _.extend({
             searchable: true,
@@ -156,17 +144,7 @@ var FieldSelector = widget.FieldChar.extend({
             this._prefill()
         );
     },
-
-    get_model: function(){
-    if (this.options.model) {
-                return this.options.model;
-            }
-            if (this.field_manager.fields[this.options.model_field]) {
-                return this.field_manager.get_field_value(this.options.model_field);
-            }
-    },
     start: function () {
-        this.model = this.get_model();
         this.$input = this.$("input");
         this.$popover = this.$(".o_field_selector_popover");
         this.displayPage();
@@ -177,9 +155,7 @@ var FieldSelector = widget.FieldChar.extend({
     /// @param chain - the new field chain string
     setChain: function (chain) {
         this.chain = chain;
-        //this.$input.val(this.chain);
-        this.$el.find('input[type=text]').val(this.chain);
-        this.field_manager.fields[this.field.__attrs.name].set_value(this.chain);
+        this.$input.val(this.chain);
     },
     /// The addChainNode method adds a field name to the current field chain.
     /// @param fieldName - the new field name to add at the end of the current field chain
@@ -214,10 +190,7 @@ var FieldSelector = widget.FieldChar.extend({
         this._isOpen = true;
         this._prefill().then((function () {
             this.displayPage();
-            //this.$popover.removeClass("hidden");
-            // Below line works
-            // yogesh
-            this.$el.find('.o_field_selector_popover').removeClass('hidden')
+            this.$popover.removeClass("hidden");
         }).bind(this));
     },
     /// The hidePopover method closes the popover and mark the field as selected. If the field chain changed,
@@ -225,9 +198,8 @@ var FieldSelector = widget.FieldChar.extend({
     hidePopover: function () {
         if (!this._isOpen) return;
         this._isOpen = false;
-        //this.$popover.addClass("hidden");
+        this.$popover.addClass("hidden");
         this.isSelected = true;
-        this.$el.find('.o_field_selector_popover').addClass('hidden');
         if (this.dirty) {
             this.trigger_up("field_chain_changed", {chain: this.chain});
             this.dirty = false;
@@ -237,8 +209,7 @@ var FieldSelector = widget.FieldChar.extend({
     /// @return a deferred which is resolved once the last page is shown
     _prefill: function () {
         this.pages = [];
-        var fieldname = this.field.__attrs['data_model_field'];
-        return this._pushPageData(this.model || this.field_manager.fields[fieldname].get_value()).then((function() {
+        return this._pushPageData(this.model).then((function() {
             return (this.chain ? processChain.call(this, this.chain.split(".").reverse()) : $.when());
         }).bind(this));
 
@@ -365,6 +336,5 @@ function sortFields(fields) {
         .value();
 }
 
-core.form_widget_registry.add('field-selector', FieldSelector);
-return FieldSelector;
+return ModelFieldSelector;
 });
